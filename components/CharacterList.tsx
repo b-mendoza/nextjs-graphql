@@ -20,6 +20,7 @@ function CharacterList({ characters }: Props) {
               }
               width={300}
               height={300}
+              alt={`${character.name}`}
             />
 
             <Heading as="h4" alignItems="center" size="md">
