@@ -1,10 +1,10 @@
 import { Heading, Text, SimpleGrid } from '@chakra-ui/react'
 import Image from 'next/image'
 
-import { CharactersQuery_Results } from 'types/CharactersQuery'
+import { GetCharactersBySearch_characters_results } from 'types/GetCharactersBySearch'
 
 type Props = {
-  characters: CharactersQuery_Results[]
+  characters: GetCharactersBySearch_characters_results[]
 }
 
 function CharacterList({ characters }: Props) {

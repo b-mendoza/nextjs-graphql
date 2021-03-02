@@ -13,16 +13,19 @@ import {
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 
-import { CHARACTERS_QUERY } from 'lib/queries/characters'
+import { GET_PAGINATED_CHARACTERS } from 'lib/queries/characters'
 import { initializeApollo } from 'lib/apollo'
 
-import { CharactersQuery_Results, CharactersQuery } from 'types/CharactersQuery'
-import { SearchCharacters_Results } from 'types/SearchCharacters'
+import { GetCharactersBySearch_characters_results } from 'types/GetCharactersBySearch'
+import {
+  GetPaginatedCharacters,
+  GetPaginatedCharacters_characters_results
+} from 'types/GetPaginatedCharacters'
 
 import CharacterList from 'components/CharacterList'
 
 type Props = {
-  characters: CharactersQuery_Results[]
+  characters: GetPaginatedCharacters_characters_results[]
 }
 
 function Home(results: Props) {
@@ -49,7 +52,10 @@ function Home(results: Props) {
     })
 
     const { characters, error } = (await results.json()) as {
-      characters: (SearchCharacters_Results | null)[] | null | undefined
+      characters:
+        | (GetCharactersBySearch_characters_results | null)[]
+        | null
+        | undefined
       error: string | null
     }
 
@@ -63,7 +69,7 @@ function Home(results: Props) {
         title: 'An Error Occurred.'
       })
     } else {
-      setCharacters(characters as SearchCharacters_Results[])
+      setCharacters(characters as GetCharactersBySearch_characters_results[])
     }
   }
 
@@ -115,8 +121,8 @@ function Home(results: Props) {
 export const getStaticProps: GetStaticProps = async () => {
   const apolloClient = initializeApollo()
 
-  const { data } = await apolloClient.query<CharactersQuery>({
-    query: CHARACTERS_QUERY
+  const { data } = await apolloClient.query<GetPaginatedCharacters>({
+    query: GET_PAGINATED_CHARACTERS
   })
 
   return {

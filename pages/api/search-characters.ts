@@ -1,18 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { initializeApollo } from 'lib/apollo'
-import { SEARCH_CHARACTERS } from 'lib/queries/characters'
+import { GET_CHARACTERS_BY_SEARCH } from 'lib/queries/characters'
 
 import {
-  SearchCharacters_Results,
-  SearchCharacters,
-  SearchCharactersVariables
-} from 'types/SearchCharacters'
+  GetCharactersBySearch_characters_results,
+  GetCharactersBySearch,
+  GetCharactersBySearchVariables
+} from 'types/GetCharactersBySearch'
 
 const apolloClient = initializeApollo()
 
 type Data = {
-  characters: (SearchCharacters_Results | null)[] | null | undefined
+  characters:
+    | (GetCharactersBySearch_characters_results | null)[]
+    | null
+    | undefined
   error: string | null
 }
 
@@ -24,10 +27,10 @@ export default async function (
 
   try {
     const { data } = await apolloClient.query<
-      SearchCharacters,
-      SearchCharactersVariables
+      GetCharactersBySearch,
+      GetCharactersBySearchVariables
     >({
-      query: SEARCH_CHARACTERS,
+      query: GET_CHARACTERS_BY_SEARCH,
       variables: { search }
     })
 

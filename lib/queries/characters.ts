@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const CHARACTERS_QUERY = gql`
-  query CharactersQuery {
+export const GET_PAGINATED_CHARACTERS = gql`
+  query GetPaginatedCharacters {
     characters(page: 1) {
       info {
         count
@@ -29,8 +29,8 @@ export const CHARACTERS_QUERY = gql`
   }
 `
 
-export const SEARCH_CHARACTERS = gql`
-  query SearchCharacters($search: String!) {
+export const GET_CHARACTERS_BY_SEARCH = gql`
+  query GetCharactersBySearch($search: String!) {
     characters(filter: { name: $search }) {
       info {
         count
