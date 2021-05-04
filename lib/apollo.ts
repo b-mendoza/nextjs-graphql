@@ -6,7 +6,7 @@ import { createApolloClient } from 'lib/apolloClient'
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 export function initializeApollo(
-  initialState: NormalizedCacheObject | null = null
+  initialState: NormalizedCacheObject | null = null,
 ) {
   const _apolloClient = apolloClient ?? createApolloClient()
 
@@ -28,7 +28,7 @@ export function initializeApollo(
   return _apolloClient
 }
 
-export function useApollo(initialState: NormalizedCacheObject | null) {
+export function useApollo(initialState: NormalizedCacheObject | undefined) {
   const store = useMemo(() => initializeApollo(initialState), [initialState])
 
   return store

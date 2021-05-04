@@ -7,7 +7,7 @@ import {
   IconButton,
   Input,
   Stack,
-  useToast
+  useToast,
 } from '@chakra-ui/react'
 
 import { GetStaticProps } from 'next'
@@ -19,7 +19,7 @@ import { initializeApollo } from 'lib/apollo'
 import { GetCharactersBySearch_characters_results } from 'types/GetCharactersBySearch'
 import {
   GetPaginatedCharacters,
-  GetPaginatedCharacters_characters_results
+  GetPaginatedCharacters_characters_results,
 } from 'types/GetPaginatedCharacters'
 
 import CharacterList from 'components/CharacterList'
@@ -48,7 +48,7 @@ function Home(results: Props) {
 
     const results = await fetch('/api/search-characters', {
       method: 'POST',
-      body: search
+      body: search,
     })
 
     const { characters, error } = (await results.json()) as {
@@ -66,7 +66,7 @@ function Home(results: Props) {
         isClosable: true,
         position: 'bottom',
         status: 'error',
-        title: 'An Error Occurred.'
+        title: 'An Error Occurred.',
       })
     } else {
       setCharacters(characters as GetCharactersBySearch_characters_results[])
@@ -122,13 +122,16 @@ export const getStaticProps: GetStaticProps = async () => {
   const apolloClient = initializeApollo()
 
   const { data } = await apolloClient.query<GetPaginatedCharacters>({
-    query: GET_PAGINATED_CHARACTERS
+    query: GET_PAGINATED_CHARACTERS,
   })
+
+  const initialApolloState = apolloClient.cache.extract()
 
   return {
     props: {
-      characters: data.characters?.results
-    }
+      initialApolloState,
+      characters: data.characters?.results,
+    },
   }
 }
 
