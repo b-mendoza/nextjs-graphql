@@ -1,7 +1,6 @@
 import { Heading, Text } from '@chakra-ui/react';
 import { GetCharacters_characters_results } from 'generated/GetCharacters';
 import Image from 'next/image';
-import { memo } from 'react';
 
 type Props = Pick<
   GetCharacters_characters_results,
