@@ -106,6 +106,7 @@ function Home({ initialCharacterList }: Props) {
           <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Stack maxWidth="350px" width="100%" isInline mb={8}>
               <Input
+                autoComplete="off"
                 placeholder="Search for Characters"
                 {...register('name')}
               />
