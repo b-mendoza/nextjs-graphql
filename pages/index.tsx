@@ -1,5 +1,5 @@
-import { SearchIcon, CloseIcon } from '@chakra-ui/icons'
-import { useState } from 'react'
+import { useLazyQuery } from '@apollo/client';
+import { CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
@@ -8,131 +8,155 @@ import {
   Input,
   Stack,
   useToast,
-} from '@chakra-ui/react'
-
-import { GetStaticProps } from 'next'
-import Head from 'next/head'
-
-import { GET_PAGINATED_CHARACTERS } from 'lib/queries/characters'
-import { initializeApollo } from 'lib/apollo'
-
-import { GetCharactersBySearch_characters_results } from 'types/GetCharactersBySearch'
+} from '@chakra-ui/react';
+import CharacterList from 'components/CharacterList';
 import {
-  GetPaginatedCharacters,
-  GetPaginatedCharacters_characters_results,
-} from 'types/GetPaginatedCharacters'
-
-import CharacterList from 'components/CharacterList'
+  GetCharacters,
+  GetCharacters_characters_results,
+} from 'generated/GetCharacters';
+import {
+  GetCharactersBySearch,
+  GetCharactersBySearchVariables,
+} from 'generated/GetCharactersBySearch';
+import { initializeApollo } from 'lib/apollo';
+import {
+  GET_CHARACTERS,
+  GET_CHARACTERS_BY_SEARCH,
+} from 'lib/queries/characters';
+import { GetStaticProps } from 'next';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 type Props = {
-  characters: GetPaginatedCharacters_characters_results[]
-}
+  initialCharacterList: (GetCharacters_characters_results | null)[] | null;
+};
 
-function Home(results: Props) {
-  const intialState = results
+type FormValues = {
+  name: string;
+};
 
-  const [search, setSearch] = useState('')
+const ERROR_TOAST_ID = 'ERROR_TOAST_ID';
 
-  const [characters, setCharacters] = useState(intialState.characters)
+function Home({ initialCharacterList }: Props) {
+  const [characterList, setCharacterList] = useState(initialCharacterList);
 
-  const toast = useToast()
+  const toast = useToast();
 
-  const handleIconClick = async () => {
-    setSearch('')
+  const { handleSubmit, register, setValue, watch } = useForm<FormValues>({
+    defaultValues: { name: '' },
+  });
 
-    setCharacters(intialState.characters)
-  }
+  const [getCharactersBySearch, { data, error, loading }] = useLazyQuery<
+    GetCharactersBySearch,
+    GetCharactersBySearchVariables
+  >(GET_CHARACTERS_BY_SEARCH);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const results = await fetch('/api/search-characters', {
-      method: 'POST',
-      body: search,
-    })
-
-    const { characters, error } = (await results.json()) as {
-      characters:
-        | (GetCharactersBySearch_characters_results | null)[]
-        | null
-        | undefined
-      error: string | null
-    }
-
-    if (error || !characters) {
+  useEffect(() => {
+    if (error && !toast.isActive(ERROR_TOAST_ID)) {
       toast({
-        description: error,
-        duration: 5000,
+        id: ERROR_TOAST_ID,
+        description: error.message,
+        duration: 2000,
         isClosable: true,
         position: 'bottom',
         status: 'error',
         title: 'An Error Occurred.',
-      })
-    } else {
-      setCharacters(characters as GetCharactersBySearch_characters_results[])
+      });
+
+      return;
     }
-  }
+
+    if (data && !loading) {
+      const _characterList = data.characters?.results ?? null;
+
+      setCharacterList(_characterList);
+    }
+  }, [data, error, loading, toast]);
+
+  const handleFormSubmit = ({ name }: FormValues) => {
+    getCharactersBySearch({ variables: { name } });
+  };
+
+  const handleFormReset = () => {
+    setCharacterList(initialCharacterList);
+
+    setValue('name', '');
+  };
 
   return (
-    <Flex direction="column" justify="center" align="center">
+    <>
       <Head>
         <title>NextJS - Apollo</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Box mb={4} flexDirection="column" align="center" justify="center" py={8}>
-        <Heading as="h1" size="2xl" mb={8}>
-          Rick and Morty
-        </Heading>
+      <Flex direction="column" justify="center" align="center">
+        <Box
+          mb={4}
+          flexDirection="column"
+          align="center"
+          justify="center"
+          py={8}
+        >
+          <Heading as="h1" size="2xl" mb={8}>
+            Rick and Morty
+          </Heading>
 
-        <form onSubmit={handleSubmit}>
-          <Stack maxWidth="350px" width="100%" isInline mb={8}>
-            <Input
-              placeholder="Search"
-              value={search}
-              border="none"
-              onChange={event => setSearch(event.target.value)}
-            />
+          <form onSubmit={handleSubmit(handleFormSubmit)}>
+            <Stack maxWidth="350px" width="100%" isInline mb={8}>
+              <Input
+                placeholder="Search for Characters"
+                {...register('name')}
+              />
 
-            <IconButton
-              colorScheme="blue"
-              aria-label="Search database"
-              icon={<SearchIcon />}
-              disabled={search === ''}
-              type="submit"
-            />
+              <IconButton
+                aria-label="Search Database"
+                colorScheme="blue"
+                disabled={watch('name').trim() === ''}
+                icon={<SearchIcon />}
+                type="submit"
+              />
 
-            <IconButton
-              colorScheme="red"
-              aria-label="Reset "
-              icon={<CloseIcon />}
-              disabled={search === ''}
-              onClick={handleIconClick}
-            />
-          </Stack>
-        </form>
+              <IconButton
+                aria-label="Reset"
+                colorScheme="red"
+                icon={<CloseIcon />}
+                onClick={handleFormReset}
+              />
+            </Stack>
+          </form>
 
-        <CharacterList characters={characters} />
-      </Box>
-    </Flex>
-  )
+          <CharacterList characters={characterList} />
+        </Box>
+      </Flex>
+    </>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const apolloClient = initializeApollo()
+  try {
+    const apolloClient = initializeApollo();
 
-  const { data } = await apolloClient.query<GetPaginatedCharacters>({
-    query: GET_PAGINATED_CHARACTERS,
-  })
+    const { data } = await apolloClient.query<GetCharacters>({
+      query: GET_CHARACTERS,
+    });
 
-  const initialApolloState = apolloClient.cache.extract()
+    const initialApolloState = apolloClient.cache.extract();
 
-  return {
-    props: {
-      initialApolloState,
-      characters: data.characters?.results,
-    },
+    return {
+      props: {
+        initialApolloState,
+        initialCharacterList: data.characters?.results,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        initialCharacterList: [],
+      },
+    };
   }
-}
+};
 
-export default Home
+export default Home;
