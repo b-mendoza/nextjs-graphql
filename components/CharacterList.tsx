@@ -1,39 +1,27 @@
-import { Heading, Text, SimpleGrid } from '@chakra-ui/react'
-import Image from 'next/image'
+import { SimpleGrid } from '@chakra-ui/react';
+import { GetCharactersBySearch_characters_results } from 'generated/GetCharactersBySearch';
+import { memo } from 'react';
 
-import { GetCharactersBySearch_characters_results } from 'types/GetCharactersBySearch'
+import Character from 'components/Character';
 
 type Props = {
-  characters: GetCharactersBySearch_characters_results[]
-}
+  characters: (GetCharactersBySearch_characters_results | null)[] | null;
+};
 
 function CharacterList({ characters }: Props) {
   return (
     <SimpleGrid columns={[1, 2, 3]} spacing="40px">
-      {characters.map(character => {
-        return (
-          <div key={character.id}>
-            <Image
-              src={
-                character.image ||
-                'https://olafdeboer.nl/wp-content/themes/koji/assets/images/default-fallback-image.png'
-              }
-              width={300}
-              height={300}
-              alt={`${character.name}`}
-            />
-
-            <Heading as="h4" alignItems="center" size="md">
-              {character.name}
-            </Heading>
-
-            <Text align="center">Origin: {character.origin?.name}</Text>
-            <Text align="center">Location: {character.location?.name}</Text>
-          </div>
-        )
-      })}
+      {characters?.map(character => (
+        <Character
+          key={character?.id}
+          image={character?.image || null}
+          location={character?.location || null}
+          name={character?.name || null}
+          origin={character?.origin || null}
+        />
+      ))}
     </SimpleGrid>
-  )
+  );
 }
 
-export default CharacterList
+export default memo(CharacterList);
