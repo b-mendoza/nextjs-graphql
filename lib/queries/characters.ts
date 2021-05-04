@@ -1,58 +1,41 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
-export const GET_PAGINATED_CHARACTERS = gql`
-  query GetPaginatedCharacters {
-    characters(page: 1) {
-      info {
-        count
-        pages
-      }
+export const GET_CHARACTERS = gql`
+  query GetCharacters {
+    characters {
       results {
-        name
         id
+        name
         location {
-          name
           id
+          name
         }
         image
         origin {
+          id
           name
-          id
-        }
-        episode {
-          id
-          episode
-          air_date
         }
       }
     }
   }
-`
+`;
 
 export const GET_CHARACTERS_BY_SEARCH = gql`
-  query GetCharactersBySearch($search: String!) {
-    characters(filter: { name: $search }) {
-      info {
-        count
-      }
+  query GetCharactersBySearch($name: String!) {
+    characters(filter: { name: $name }) {
       results {
-        name
         id
+        name
         location {
-          name
           id
+          name
         }
         image
         origin {
+          id
           name
-          id
-        }
-        episode {
-          id
-          episode
-          air_date
         }
       }
     }
   }
-`
+`;
