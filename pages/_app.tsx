@@ -1,25 +1,23 @@
-import { ApolloProvider, NormalizedCacheObject } from '@apollo/client'
-import { AppProps } from 'next/app'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ApolloProvider, NormalizedCacheObject } from '@apollo/client';
+import { ChakraProvider } from '@chakra-ui/react';
+import { AppProps } from 'next/app';
 
-import { useApollo } from 'lib/apollo'
-
-import 'styles/globals.css'
+import { useApollo } from 'lib/apollo';
 
 type PageProps = {
-  initialApolloState: NormalizedCacheObject | undefined
-}
+  initialApolloState: NormalizedCacheObject | undefined;
+};
 
-function App({ Component, pageProps }: AppProps) {
-  const apolloClient = useApollo((pageProps as PageProps).initialApolloState)
+function __App({ Component, pageProps }: AppProps) {
+  const apolloClient = useApollo((pageProps as PageProps).initialApolloState);
 
   return (
     <ApolloProvider client={apolloClient}>
-      <ChakraProvider>
+      <ChakraProvider resetCSS>
         <Component {...pageProps} />
       </ChakraProvider>
     </ApolloProvider>
-  )
+  );
 }
 
-export default App
+export default __App;
