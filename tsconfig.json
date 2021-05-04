@@ -35,6 +35,7 @@
     "**/*.js"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "generated/globalTypes.ts"
   ]
 }
