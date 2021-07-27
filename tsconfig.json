@@ -7,11 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "Node",
     "noEmit": true,
@@ -28,10 +24,9 @@
     "next-env.d.ts",
     "env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "**/*.js",
+    "setupTests.ts "
   ],
-  "exclude": [
-    "generated/**/*",
-    "node_modules"
-  ]
+  "exclude": ["generated/**/*", "node_modules"]
 }
