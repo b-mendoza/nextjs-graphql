@@ -5,7 +5,7 @@ import { AppProps } from 'next/app';
 import { useApollo } from 'lib/apollo';
 
 type PageProps = {
-  initialApolloState: NormalizedCacheObject | undefined;
+  initialApolloState?: NormalizedCacheObject;
 };
 
 function __App({ Component, pageProps }: AppProps) {
