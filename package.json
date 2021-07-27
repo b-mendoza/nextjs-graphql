@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
     "start": "next start",
-    "codegen": "rimraf generated && rimraf \"*.gql\" && npm run codegen:schema && npm run codegen:types",
+    "codegen": "rimraf generated *.gql && npm run codegen:schema && npm run codegen:types",
     "codegen:schema": "apollo client:download-schema --endpoint=https://rickandmortyapi.com/graphql/ schema.gql",
     "codegen:types": "apollo client:codegen --target typescript --localSchemaFile schema.gql --outputFlat --includes \"lib/queries/**/*.ts\" --excludes \"generated\" generated"
   },
