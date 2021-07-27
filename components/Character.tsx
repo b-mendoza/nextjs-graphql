@@ -11,14 +11,14 @@ function Character({ image, location, name, origin }: Props) {
   return (
     <div>
       <Image
+        alt={name || undefined}
+        height={300}
         src={
           image ||
           'https://olafdeboer.nl/wp-content/themes/koji/assets/images/default-fallback-image.png'
         }
-        width={300}
-        height={300}
-        alt={name || undefined}
         title={name || undefined}
+        width={300}
       />
 
       <Heading as="h4" alignItems="center" size="md">
