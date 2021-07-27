@@ -7,11 +7,13 @@
   "root": true,
   "extends": [
     "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:jsx-a11y/strict",
+    "plugin:@next/next/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -20,7 +22,7 @@
       "jsx": true
     },
     "ecmaVersion": 12,
-    "project": "./tsconfig.json",
+    "project": "tsconfig.json",
     "sourceType": "module"
   },
   "settings": {
@@ -38,11 +40,11 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/naming-convention": "off",
-    "@typescript-eslint/require-await": "off",
     "import/prefer-default-export": "off",
     "no-console": "off",
     "no-underscore-dangle": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off"
   }
